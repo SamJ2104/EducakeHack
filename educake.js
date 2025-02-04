@@ -1,4 +1,50 @@
 (async function() {
+    // Store the headers
+    let dynamicHeaders = {};
+
+    // Function to intercept and log requests with Authorization header
+    const interceptRequests = (url, options) => {
+        // Check if Authorization header exists in the request
+        if (options?.headers?.authorization) {
+            dynamicHeaders = options.headers; // Store headers for later use
+            console.log("Authorization header found:", dynamicHeaders);
+            return true;
+        }
+        return false;
+    };
+
+    // Intercept fetch requests
+    const originalFetch = window.fetch;
+    window.fetch = async function(url, options) {
+        // Check and capture headers when Authorization is found
+        if (interceptRequests(url, options)) {
+            // Stop intercepting fetch requests once Authorization is found
+            window.fetch = originalFetch;
+        }
+
+        return originalFetch.apply(this, arguments);
+    };
+
+    // Intercept XMLHttpRequest (for older API requests)
+    const originalXHR = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function(method, url) {
+        const self = this;
+        this.addEventListener("readystatechange", function() {
+            if (this.readyState === 4) {
+                // Check if the response contains the Authorization header
+                const responseHeaders = this.getAllResponseHeaders();
+                if (responseHeaders.includes("Authorization")) {
+                    dynamicHeaders = this.getResponseHeader("Authorization");
+                    console.log("Authorization header found in XHR response:", dynamicHeaders);
+
+                    // Stop intercepting XHR requests once Authorization is found
+                    XMLHttpRequest.prototype.open = originalXHR;
+                }
+            }
+        });
+        originalXHR.apply(this, arguments);
+    };
+
     // Extract QUIZID from the URL
     let match = window.location.pathname.match(/quiz\/(\d+)/);
     if (!match) {
@@ -8,37 +54,23 @@
     let quizId = match[1];
 
     try {
-        // Function to capture the headers from previous requests
-        async function fetchWithHeaders(url, options) {
-            const response = await fetch(url, options);
-            if (!response.ok) {
-                throw new Error("Request failed");
-            }
-            const responseHeaders = response.headers;
+        // Wait for the headers to be captured from the first request
+        await new Promise(resolve => setTimeout(resolve, 1000));  // Adjust wait time if necessary
 
-            // Store headers for later requests
-            const headers = {
-                'accept': responseHeaders.get('accept') || 'application/json;version=2',
-                'accept-language': responseHeaders.get('accept-language') || 'en-GB,en-US;q=0.9,en;q=0.8',
-                'authorization': responseHeaders.get('authorization') || '',  // Authorization token
-                'cache-control': responseHeaders.get('cache-control') || 'no-cache',
-                'cookie': responseHeaders.get('cookie') || '',
-                'user-agent': responseHeaders.get('user-agent') || 'Mozilla/5.0',
-                'x-xsrf-token': responseHeaders.get('x-xsrf-token') || ''
-            };
-
-            return {
-                headers,
-                json: await response.json()
-            };
+        if (!dynamicHeaders.authorization) {
+            alert("Authorization token not found. Make sure you've made a request first.");
+            return;
         }
 
-        // Fetch quiz data using dynamically captured headers
-        let quizResponseData = await fetchWithHeaders(`https://my.educake.co.uk/api/student/quiz/${quizId}`, {
-            method: 'GET'
+        // Fetch quiz data using the dynamic headers
+        let quizResponse = await fetch(`https://my.educake.co.uk/api/student/quiz/${quizId}`, {
+            method: 'GET',
+            headers: dynamicHeaders
         });
 
-        let quizData = quizResponseData.json;
+        if (!quizResponse.ok) throw new Error("Failed to fetch quiz data.");
+
+        let quizData = await quizResponse.json();
         let attempt = Object.values(quizData.attempt)[0]; // Get first attempt object
         if (!attempt || !attempt.questions) {
             alert("No questions found in the quiz.");
@@ -48,16 +80,16 @@
         let questionIds = attempt.questions;
         console.log(`Found ${questionIds.length} questions. Fetching correct answers...`);
 
-        // Send requests for each question using dynamic headers
+        // Send requests for each question using the dynamic headers
         for (let questionId of questionIds) {
             try {
-                let questionResponseData = await fetchWithHeaders(`https://my.educake.co.uk/api/course/question/${questionId}/mark`, {
+                let questionResponse = await fetch(`https://my.educake.co.uk/api/course/question/${questionId}/mark`, {
                     method: 'POST',
-                    headers: quizResponseData.headers,
+                    headers: dynamicHeaders,
                     body: JSON.stringify({"givenAnswer": "1"})
                 });
 
-                let data = questionResponseData.json;
+                let data = await questionResponse.json();
 
                 // Check if response contains the correct answer
                 if (data.answer && data.answer.correctAnswers) {
