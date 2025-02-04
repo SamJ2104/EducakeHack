@@ -41,6 +41,7 @@
 
         // Function to properly capitalize answers
         function capitalizeAnswer(answer) {
+            if (typeof answer !== 'string') return ''; // Safeguard against non-string answers
             return answer
                 .toLowerCase()
                 .replace(/\b\w/g, char => char.toUpperCase()); // Capitalizes first letter of each word
@@ -49,7 +50,9 @@
         // Function to get the shortest answer from multiple correct ones
         function getShortestAnswer(answers) {
             if (!Array.isArray(answers)) return capitalizeAnswer(answers); // If it's not an array, just return the capitalized string
-            return capitalizeAnswer(answers.reduce((shortest, current) => 
+            let validAnswers = answers.filter(a => typeof a === 'string' && a.trim().length > 0); // Ensure we filter out invalid answers
+            if (validAnswers.length === 0) return ''; // Return empty if no valid answers are found
+            return capitalizeAnswer(validAnswers.reduce((shortest, current) => 
                 current.length < shortest.length ? current : shortest
             ));
         }
@@ -65,12 +68,14 @@
 
                 // Loop through answers and display them
                 answersArray.forEach((item, index) => {
-                    let shortestAnswer = getShortestAnswer(item.correctAnswers);
+                    if (item && item.correctAnswers) {
+                        let shortestAnswer = getShortestAnswer(item.correctAnswers);
 
-                    let answerBox = document.createElement("div");
-                    answerBox.classList.add("answer-box");
-                    answerBox.textContent = `${index + 1}: ${shortestAnswer}`;
-                    answersDiv.appendChild(answerBox);
+                        let answerBox = document.createElement("div");
+                        answerBox.classList.add("answer-box");
+                        answerBox.textContent = `${index + 1}: ${shortestAnswer || 'No valid answer'}`;
+                        answersDiv.appendChild(answerBox);
+                    }
                 });
             } catch (error) {
                 console.error("Error decoding answers:", error);
