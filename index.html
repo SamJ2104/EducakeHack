@@ -46,6 +46,14 @@
                 .replace(/\b\w/g, char => char.toUpperCase()); // Capitalizes first letter of each word
         }
 
+        // Function to get the shortest answer from multiple correct ones
+        function getShortestAnswer(answers) {
+            if (!Array.isArray(answers)) return capitalizeAnswer(answers); // If it's not an array, just return the capitalized string
+            return capitalizeAnswer(answers.reduce((shortest, current) => 
+                current.length < shortest.length ? current : shortest
+            ));
+        }
+
         // Decode Base64 JSON answers
         let encodedAnswers = getQueryParam("answers");
         if (encodedAnswers) {
@@ -57,9 +65,11 @@
 
                 // Loop through answers and display them
                 answersArray.forEach((item, index) => {
+                    let shortestAnswer = getShortestAnswer(item.correctAnswers);
+
                     let answerBox = document.createElement("div");
                     answerBox.classList.add("answer-box");
-                    answerBox.textContent = `${index + 1}: ${capitalizeAnswer(item.correctAnswer)}`;
+                    answerBox.textContent = `${index + 1}: ${shortestAnswer}`;
                     answersDiv.appendChild(answerBox);
                 });
             } catch (error) {
