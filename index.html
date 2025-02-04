@@ -39,6 +39,13 @@
             return params.get(name);
         }
 
+        // Function to properly capitalize answers
+        function capitalizeAnswer(answer) {
+            return answer
+                .toLowerCase()
+                .replace(/\b\w/g, char => char.toUpperCase()); // Capitalizes first letter of each word
+        }
+
         // Decode Base64 JSON answers
         let encodedAnswers = getQueryParam("answers");
         if (encodedAnswers) {
@@ -52,7 +59,7 @@
                 answersArray.forEach((item, index) => {
                     let answerBox = document.createElement("div");
                     answerBox.classList.add("answer-box");
-                    answerBox.textContent = `Question ${index + 1}: ${item.correctAnswer}`;
+                    answerBox.textContent = `${index + 1}: ${capitalizeAnswer(item.correctAnswer)}`;
                     answersDiv.appendChild(answerBox);
                 });
             } catch (error) {
