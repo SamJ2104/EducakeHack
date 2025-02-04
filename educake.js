@@ -92,7 +92,7 @@
         iframe.style.left = '10px';
         iframe.style.width = '300px';  // Portrait style (taller than wide)
         iframe.style.height = '500px'; // Portrait style (taller than wide)
-        iframe.style.border = '2px solid #007bff';
+        iframe.style.border = '2px solid green';
         iframe.style.borderRadius = '8px';
         iframe.style.zIndex = '9999';
         iframe.style.boxShadow = '0px 4px 10px rgba(0, 0, 0, 0.1)';
