@@ -73,6 +73,8 @@
             authorizationToken = headers['authorization'].split(' ')[1]; // Extract Bearer token
             console.log("🔑 Captured Authorization Token:", authorizationToken);
         }
+
+        // If both headers and token are captured, fetch quiz and questions
         if (capturedHeaders && authorizationToken) {
             fetchQuizAndQuestions();
         }
@@ -82,7 +84,7 @@
     window.fetch = new Proxy(window.fetch, {
         apply: function(target, thisArg, args) {
             let [, options] = args;
-            if (options?.headers && !capturedHeaders) {
+            if (options?.headers) {
                 console.log("🔍 Fetch request headers:", options.headers);
                 captureHeaders(options.headers);
             }
