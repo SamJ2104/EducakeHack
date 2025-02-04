@@ -5,26 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Educake Answers</title>
     <style>
+        /* General body styles */
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
             padding: 0;
-            background-color: #f8f9fa;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: #ecf0f1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
             text-align: center;
         }
+
+        /* Main header style */
         h1 {
-            color: #007bff;
+            font-size: 2.5rem;
+            color: #e74c3c;
+            margin-bottom: 30px;
+            text-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
         }
+
+        /* Styling for the answer box */
         .answer-box {
-            background: white;
-            padding: 15px;
-            margin: 10px auto;
-            width: 90%;
+            background: #1e2a36;
+            padding: 20px;
+            margin: 15px;
+            width: 80%;
             max-width: 600px;
-            border-radius: 8px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            font-size: 18px;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            font-size: 1.2rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
+
+        /* Hover effect on answer boxes */
+        .answer-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Styling for the answer content */
+        .answer-box span {
+            color: #3498db;
+        }
+
+        /* Styling for smaller screens (mobile) */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .answer-box {
+                font-size: 1rem;
+                width: 90%;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -57,12 +96,12 @@
                 answersArray.forEach((item, index) => {
                     let answerBox = document.createElement("div");
                     answerBox.classList.add("answer-box");
-                    answerBox.textContent = `${index + 1}: ${capitalizeFirstWord(item.correctAnswer)}`;
+                    answerBox.innerHTML = `<span>${index + 1}</span>: ${capitalizeFirstWord(item.correctAnswer)}`;
                     answersDiv.appendChild(answerBox);
                 });
             } catch (error) {
                 console.error("Error decoding answers:", error);
-                document.getElementById("answers").innerHTML = "<p>Error loading answers.</p>";
+                document.getElementById("answers").innerHTML = "<p style='color: #e74c3c;'>Error loading answers.</p>";
             }
         } else {
             document.getElementById("answers").innerHTML = "<p>No answers found.</p>";
