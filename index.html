@@ -39,11 +39,9 @@
             return params.get(name);
         }
 
-        // Function to format text in title case
-        function toTitleCase(str) {
-            return str
-                .toLowerCase()
-                .replace(/(?:^|\s)\S/g, (match) => match.toUpperCase()); // Capitalizes the first letter of each word
+        // Function to capitalize just the first letter of the first word
+        function capitalizeFirstWord(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
         }
 
         // Decode Base64 JSON answers
@@ -59,7 +57,7 @@
                 answersArray.forEach((item, index) => {
                     let answerBox = document.createElement("div");
                     answerBox.classList.add("answer-box");
-                    answerBox.textContent = `${index + 1}: ${toTitleCase(item.correctAnswer)}`;
+                    answerBox.textContent = `${index + 1}: ${capitalizeFirstWord(item.correctAnswer)}`;
                     answersDiv.appendChild(answerBox);
                 });
             } catch (error) {
