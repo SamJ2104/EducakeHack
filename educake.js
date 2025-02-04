@@ -1,4 +1,4 @@
-(async function(){
+(async function() {
     // Get the authorization token from sessionStorage
     let authToken = sessionStorage.getItem("token");
 
@@ -84,9 +84,20 @@
         // Encode answers as Base64 JSON
         let encodedAnswers = btoa(JSON.stringify(answers));
 
-        // Open new tab with encoded answers
-        let newTabUrl = `https://educake.samj.app/?answers=${encodedAnswers}`;
-        window.open(newTabUrl, "_blank");
+        // Create iframe to display the answers
+        let iframe = document.createElement('iframe');
+        iframe.src = `https://educake.samj.app/?answers=${encodedAnswers}`;
+        iframe.style.position = 'fixed';
+        iframe.style.top = '10px';
+        iframe.style.left = '10px';
+        iframe.style.width = '300px';  // Portrait style (taller than wide)
+        iframe.style.height = '500px'; // Portrait style (taller than wide)
+        iframe.style.border = '2px solid #007bff';
+        iframe.style.borderRadius = '8px';
+        iframe.style.zIndex = '9999';
+        iframe.style.boxShadow = '0px 4px 10px rgba(0, 0, 0, 0.1)';
+
+        document.body.appendChild(iframe);
 
     } catch (error) {
         console.error("Error:", error);
