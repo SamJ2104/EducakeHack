@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educake Answers</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+        h1 {
+            color: #007bff;
+        }
+        .answer-box {
+            background: white;
+            padding: 15px;
+            margin: 10px auto;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Correct Answers</h1>
+    <div id="answers"></div>
+
+    <script>
+        // Function to get query parameters
+        function getQueryParam(name) {
+            let params = new URLSearchParams(window.location.search);
+            return params.get(name);
+        }
+
+        // Decode Base64 JSON answers
+        let encodedAnswers = getQueryParam("answers");
+        if (encodedAnswers) {
+            try {
+                let decodedJson = atob(encodedAnswers);
+                let answersArray = JSON.parse(decodedJson);
+
+                let answersDiv = document.getElementById("answers");
+
+                // Loop through answers and display them
+                answersArray.forEach((item, index) => {
+                    let answerBox = document.createElement("div");
+                    answerBox.classList.add("answer-box");
+                    answerBox.textContent = `Question ${index + 1}: ${item.correctAnswer}`;
+                    answersDiv.appendChild(answerBox);
+                });
+            } catch (error) {
+                console.error("Error decoding answers:", error);
+                document.getElementById("answers").innerHTML = "<p>Error loading answers.</p>";
+            }
+        } else {
+            document.getElementById("answers").innerHTML = "<p>No answers found.</p>";
+        }
+    </script>
+
+</body>
+</html>
