@@ -84,7 +84,26 @@
         // Encode answers as Base64 JSON
         let encodedAnswers = btoa(JSON.stringify(answers));
 
-        // Create iframe to display the answers
+        // Create "Show Answers" button
+        let showAnswersButton = document.createElement('div');
+        showAnswersButton.innerText = 'Show Answers';
+        showAnswersButton.style.position = 'fixed';
+        showAnswersButton.style.top = '10px';
+        showAnswersButton.style.left = '10px';
+        showAnswersButton.style.width = '150px';
+        showAnswersButton.style.height = '150px';
+        showAnswersButton.style.border = '2px solid green';
+        showAnswersButton.style.borderRadius = '50%';
+        showAnswersButton.style.color = 'green';
+        showAnswersButton.style.display = 'flex';
+        showAnswersButton.style.alignItems = 'center';
+        showAnswersButton.style.justifyContent = 'center';
+        showAnswersButton.style.fontWeight = 'bold';
+        showAnswersButton.style.fontSize = '16px';
+        showAnswersButton.style.cursor = 'pointer';
+        showAnswersButton.style.zIndex = '9999';
+
+        // Create iframe (hidden initially)
         let iframe = document.createElement('iframe');
         iframe.src = `https://educake.samj.app/?answers=${encodedAnswers}`;
         iframe.style.position = 'fixed';
@@ -96,9 +115,67 @@
         iframe.style.borderRadius = '8px';
         iframe.style.zIndex = '9999';
         iframe.style.boxShadow = '0px 4px 10px rgba(0, 0, 0, 0.1)';
+        iframe.style.display = 'none';  // Hidden by default
 
+        // Add "Hide Answers" link inside iframe
+        let hideAnswersLink = document.createElement('a');
+        hideAnswersLink.href = '#';
+        hideAnswersLink.innerText = 'Hide Answers';
+        hideAnswersLink.style.position = 'absolute';
+        hideAnswersLink.style.bottom = '10px';
+        hideAnswersLink.style.right = '10px';
+        hideAnswersLink.style.color = 'green';
+        hideAnswersLink.style.textDecoration = 'underline';
+        hideAnswersLink.style.fontSize = '14px';
+        hideAnswersLink.addEventListener('click', () => {
+            iframe.style.display = 'none';
+            showAnswersButton.style.display = 'flex';  // Show the button again
+        });
+
+        iframe.appendChild(hideAnswersLink);
+
+        // Toggle iframe visibility when button is clicked
+        showAnswersButton.addEventListener('click', () => {
+            iframe.style.display = 'block';
+            showAnswersButton.style.display = 'none';  // Hide the button
+        });
+
+        // Add elements to the document body
+        document.body.appendChild(showAnswersButton);
         document.body.appendChild(iframe);
 
+        // Make the iframe draggable and resizable (except on mobile)
+        if (window.innerWidth > 768) {
+            let isDragging = false;
+            let offsetX, offsetY;
+
+            iframe.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                offsetX = e.clientX - iframe.offsetLeft;
+                offsetY = e.clientY - iframe.offsetTop;
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    iframe.style.left = `${e.clientX - offsetX}px`;
+                    iframe.style.top = `${e.clientY - offsetY}px`;
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+
+            iframe.style.resize = 'both';
+            iframe.style.overflow = 'auto';
+        }
+
+        // Adjust iframe size and disable resizing on mobile
+        if (window.innerWidth <= 768) {
+            iframe.style.width = '150px';
+            iframe.style.height = '250px';
+            iframe.style.resize = 'none';
+        }
     } catch (error) {
         console.error("Error:", error);
     }
