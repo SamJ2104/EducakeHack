@@ -22,7 +22,7 @@
     // Extract Quiz ID from URL
     let match = window.location.pathname.match(/quiz\/(\d+)/);
     if (!match) {
-        alert("Quiz ID not found in the URL.");
+        alert("make sure you're on the quiz page");
         return;
     }
     let quizId = match[1];
