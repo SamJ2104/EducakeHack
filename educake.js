@@ -137,12 +137,15 @@
             hideAnswersLink.style.display = 'none';  // Hide the link again
         });
 
-        // Create container div for iframe and the hide button
+        // Create container div for iframe and the hide button (larger hitbox area)
         let iframeContainer = document.createElement('div');
         iframeContainer.style.position = 'absolute';
         iframeContainer.style.top = '10px';
         iframeContainer.style.left = '10px';
         iframeContainer.style.zIndex = '9999';
+        iframeContainer.style.width = '350px';  // Increased width for larger hitbox
+        iframeContainer.style.height = '550px'; // Increased height for larger hitbox
+        iframeContainer.style.cursor = 'move';  // Change cursor to move to indicate drag
         iframeContainer.appendChild(iframe);
         iframeContainer.appendChild(hideAnswersLink);
 
@@ -157,7 +160,7 @@
         document.body.appendChild(showAnswersButton);
         document.body.appendChild(iframeContainer);
 
-        // Make the iframe and button draggable
+        // Make the iframe and button draggable with larger hitbox
         let isDragging = false;
         let offsetX, offsetY;
 
