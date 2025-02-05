@@ -90,8 +90,8 @@
         showAnswersButton.style.position = 'fixed';
         showAnswersButton.style.top = '10px';
         showAnswersButton.style.left = '10px';
-        showAnswersButton.style.width = '100px'; // Smaller size
-        showAnswersButton.style.height = '100px'; // Smaller size
+        showAnswersButton.style.width = '50px'; // Smaller size
+        showAnswersButton.style.height = '50px'; // Smaller size
         showAnswersButton.style.border = '2px solid green';
         showAnswersButton.style.borderRadius = '50%';
         showAnswersButton.style.backgroundColor = 'black'; // Black background
