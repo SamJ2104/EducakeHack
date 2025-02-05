@@ -119,13 +119,13 @@
         iframe.style.boxShadow = '0px 4px 10px rgba(0, 0, 0, 0.1)';
         iframe.style.display = 'none';  // Hidden by default
 
-        // Add "Hide Answers" link inside iframe
+        // Add "Hide Answers" link above the iframe (top-right corner)
         let hideAnswersLink = document.createElement('a');
         hideAnswersLink.href = '#';
         hideAnswersLink.innerText = 'Hide Answers';
         hideAnswersLink.style.position = 'absolute';
-        hideAnswersLink.style.bottom = '10px';
-        hideAnswersLink.style.right = '10px';
+        hideAnswersLink.style.top = '5px';
+        hideAnswersLink.style.right = '5px';
         hideAnswersLink.style.color = 'green';
         hideAnswersLink.style.textDecoration = 'underline';
         hideAnswersLink.style.fontSize = '14px';
@@ -134,6 +134,7 @@
             showAnswersButton.style.display = 'flex';  // Show the button again
         });
 
+        // Add link inside iframe
         iframe.appendChild(hideAnswersLink);
 
         // Toggle iframe visibility when button is clicked
