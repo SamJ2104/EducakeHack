@@ -108,7 +108,7 @@
         // Create iframe (hidden initially)
         let iframe = document.createElement('iframe');
         iframe.src = `https://educake.samj.app/?answers=${encodedAnswers}`;
-        iframe.style.position = 'fixed';
+        iframe.style.position = 'absolute';
         iframe.style.top = '10px';
         iframe.style.left = '10px';
         iframe.style.width = '300px';  // Portrait style (taller than wide)
@@ -130,12 +130,14 @@
         hideAnswersLink.style.textDecoration = 'underline';
         hideAnswersLink.style.fontSize = '14px';
         hideAnswersLink.style.zIndex = '99999'; // more than iframe
+        hideAnswersLink.style.display = 'none';  // Hidden initially
         hideAnswersLink.addEventListener('click', () => {
             iframe.style.display = 'none';
             showAnswersButton.style.display = 'flex';  // Show the button again
+            hideAnswersLink.style.display = 'none';  // Hide the link again
         });
 
-        // Create container div for iframe
+        // Create container div for iframe and the hide button
         let iframeContainer = document.createElement('div');
         iframeContainer.style.position = 'absolute';
         iframeContainer.style.top = '10px';
@@ -148,20 +150,21 @@
         showAnswersButton.addEventListener('click', () => {
             iframe.style.display = 'block';
             showAnswersButton.style.display = 'none';  // Hide the button
+            hideAnswersLink.style.display = 'block';  // Show Hide Answers button
         });
 
         // Add elements to the document body
         document.body.appendChild(showAnswersButton);
         document.body.appendChild(iframeContainer);
 
-        // Make the iframe draggable
+        // Make the iframe and button draggable
         let isDragging = false;
         let offsetX, offsetY;
 
-        iframe.addEventListener('mousedown', (e) => {
+        iframeContainer.addEventListener('mousedown', (e) => {
             isDragging = true;
-            offsetX = e.clientX - iframe.offsetLeft;
-            offsetY = e.clientY - iframe.offsetTop;
+            offsetX = e.clientX - iframeContainer.offsetLeft;
+            offsetY = e.clientY - iframeContainer.offsetTop;
         });
 
         document.addEventListener('mousemove', (e) => {
