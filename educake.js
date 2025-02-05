@@ -119,30 +119,30 @@
         iframe.style.boxShadow = '0px 4px 10px rgba(0, 0, 0, 0.1)';
         iframe.style.display = 'none';  // Hidden by default
 
-        // Create "Hide Answers" link above the iframe (outside the iframe container)
+        // Create "Hide Answers" link (relative to iframe)
         let hideAnswersLink = document.createElement('a');
         hideAnswersLink.href = '#';
         hideAnswersLink.innerText = 'Hide Answers';
         hideAnswersLink.style.position = 'absolute';
-        hideAnswersLink.style.top = '-25px'; // Above the iframe
+        hideAnswersLink.style.top = '5px'; // below the iframe
         hideAnswersLink.style.left = '5px';  // Slightly left
         hideAnswersLink.style.color = 'green';
         hideAnswersLink.style.textDecoration = 'underline';
         hideAnswersLink.style.fontSize = '14px';
+        hideAnswersLink.style.zIndex = '99999'; // more than iframe
         hideAnswersLink.addEventListener('click', () => {
             iframe.style.display = 'none';
             showAnswersButton.style.display = 'flex';  // Show the button again
         });
 
-        // Create container div for iframe and the "Hide Answers" link
+        // Create container div for iframe
         let iframeContainer = document.createElement('div');
         iframeContainer.style.position = 'absolute';
         iframeContainer.style.top = '10px';
         iframeContainer.style.left = '10px';
         iframeContainer.style.zIndex = '9999';
-
-        iframeContainer.appendChild(hideAnswersLink);
         iframeContainer.appendChild(iframe);
+        iframeContainer.appendChild(hideAnswersLink);
 
         // Toggle iframe visibility when button is clicked
         showAnswersButton.addEventListener('click', () => {
@@ -154,38 +154,30 @@
         document.body.appendChild(showAnswersButton);
         document.body.appendChild(iframeContainer);
 
-        // Make the iframe and its container draggable and resizable (except on mobile)
-        if (window.innerWidth > 768) {
-            let isDragging = false;
-            let offsetX, offsetY;
+        // Make the iframe draggable
+        let isDragging = false;
+        let offsetX, offsetY;
 
-            iframeContainer.addEventListener('mousedown', (e) => {
-                isDragging = true;
-                offsetX = e.clientX - iframeContainer.offsetLeft;
-                offsetY = e.clientY - iframeContainer.offsetTop;
-            });
+        iframe.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            offsetX = e.clientX - iframe.offsetLeft;
+            offsetY = e.clientY - iframe.offsetTop;
+        });
 
-            document.addEventListener('mousemove', (e) => {
-                if (isDragging) {
-                    iframeContainer.style.left = `${e.clientX - offsetX}px`;
-                    iframeContainer.style.top = `${e.clientY - offsetY}px`;
-                }
-            });
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                iframeContainer.style.left = `${e.clientX - offsetX}px`;
+                iframeContainer.style.top = `${e.clientY - offsetY}px`;
+            }
+        });
 
-            document.addEventListener('mouseup', () => {
-                isDragging = false;
-            });
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
 
-            iframe.style.resize = 'both';
-            iframe.style.overflow = 'auto';
-        }
-
-        // Adjust iframe size and disable resizing on mobile
-        if (window.innerWidth <= 768) {
-            iframe.style.width = '150px';
-            iframe.style.height = '250px';
-            iframe.style.resize = 'none';
-        }
+        iframe.style.resize = 'both';
+        iframe.style.overflow = 'auto';
+        
     } catch (error) {
         console.error("Error:", error);
     }
