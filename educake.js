@@ -99,6 +99,7 @@
         showAnswersButton.style.display = 'flex';
         showAnswersButton.style.alignItems = 'center';
         showAnswersButton.style.justifyContent = 'center';
+        showAnswersButton.style.textAlign = 'center';
         showAnswersButton.style.fontWeight = 'bold';
         showAnswersButton.style.fontSize = '14px';
         showAnswersButton.style.cursor = 'pointer';
