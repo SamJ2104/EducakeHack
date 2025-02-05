@@ -84,22 +84,23 @@
         // Encode answers as Base64 JSON
         let encodedAnswers = btoa(JSON.stringify(answers));
 
-        // Create "Show Answers" button
+        // Create "Show Answers" button (smaller, black background)
         let showAnswersButton = document.createElement('div');
         showAnswersButton.innerText = 'Show Answers';
         showAnswersButton.style.position = 'fixed';
         showAnswersButton.style.top = '10px';
         showAnswersButton.style.left = '10px';
-        showAnswersButton.style.width = '150px';
-        showAnswersButton.style.height = '150px';
+        showAnswersButton.style.width = '100px'; // Smaller size
+        showAnswersButton.style.height = '100px'; // Smaller size
         showAnswersButton.style.border = '2px solid green';
         showAnswersButton.style.borderRadius = '50%';
+        showAnswersButton.style.backgroundColor = 'black'; // Black background
         showAnswersButton.style.color = 'green';
         showAnswersButton.style.display = 'flex';
         showAnswersButton.style.alignItems = 'center';
         showAnswersButton.style.justifyContent = 'center';
         showAnswersButton.style.fontWeight = 'bold';
-        showAnswersButton.style.fontSize = '16px';
+        showAnswersButton.style.fontSize = '14px';
         showAnswersButton.style.cursor = 'pointer';
         showAnswersButton.style.zIndex = '9999';
 
