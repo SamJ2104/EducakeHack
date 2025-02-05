@@ -146,12 +146,14 @@
         iframeContainer.style.width = '330px';  // Increased width for larger hitbox
         iframeContainer.style.height = '550px'; // Increased height for larger hitbox
         iframeContainer.style.cursor = 'move';  // Change cursor to move to indicate drag
+        iframeContainer.style.display = 'none';  // Hidden by default
         iframeContainer.appendChild(iframe);
         iframeContainer.appendChild(hideAnswersLink);
 
         // Toggle iframe visibility when button is clicked
         showAnswersButton.addEventListener('click', () => {
             iframe.style.display = 'block';
+            iframeContainer.style.display = 'block';  // Show the container and iframe
             showAnswersButton.style.display = 'none';  // Hide the button
             hideAnswersLink.style.display = 'block';  // Show Hide Answers button
         });
