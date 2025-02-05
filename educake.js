@@ -151,6 +151,27 @@
         iframeContainer.appendChild(iframe);
         iframeContainer.appendChild(hideAnswersLink);
 
+        // Check screen size and adjust container and iframe size for mobile
+        function adjustForMobile() {
+            if (window.innerWidth <= 768) {
+                iframeContainer.style.width = '165px';  // Half width for mobile
+                iframeContainer.style.height = '275px'; // Half height for mobile
+                iframe.style.width = '165px';  // Adjust iframe width
+                iframe.style.height = '275px'; // Adjust iframe height
+            } else {
+                iframeContainer.style.width = '330px';  // Normal width for desktop
+                iframeContainer.style.height = '550px'; // Normal height for desktop
+                iframe.style.width = '300px';  // Adjust iframe width
+                iframe.style.height = '500px'; // Adjust iframe height
+            }
+        }
+
+        // Call the function to adjust size on page load
+        adjustForMobile();
+
+        // Add resize event listener to adjust size dynamically when window resizes
+        window.addEventListener('resize', adjustForMobile);
+
         // Toggle iframe visibility when button is clicked
         showAnswersButton.addEventListener('click', () => {
             iframe.style.display = 'block';
@@ -186,22 +207,6 @@
 
         iframe.style.resize = 'both';
         iframe.style.overflow = 'auto';
-
-        // Media Query for mobile devices
-        const style = document.createElement('style');
-        style.innerHTML = `
-            @media (max-width: 768px) {
-                iframeContainer {
-                    width: 165px;  // Half of the original width
-                    height: 275px; // Half of the original height
-                }
-                iframe {
-                    width: 165px;  // Adjust iframe size
-                    height: 275px; // Adjust iframe size
-                }
-            }
-        `;
-        document.head.appendChild(style);
 
     } catch (error) {
         console.error("Error:", error);
