@@ -124,8 +124,8 @@
         hideAnswersLink.href = '#';
         hideAnswersLink.innerText = 'Hide Answers';
         hideAnswersLink.style.position = 'absolute';
-        hideAnswersLink.style.top = '5px'; // below the iframe
-        hideAnswersLink.style.left = '5px';  // Slightly left
+        hideAnswersLink.style.top = '20px'; // below the iframe
+        hideAnswersLink.style.left = '20px';  // Slightly left
         hideAnswersLink.style.color = 'green';
         hideAnswersLink.style.textDecoration = 'underline';
         hideAnswersLink.style.fontSize = '14px';
@@ -143,7 +143,7 @@
         iframeContainer.style.top = '10px';
         iframeContainer.style.left = '10px';
         iframeContainer.style.zIndex = '9999';
-        iframeContainer.style.width = '350px';  // Increased width for larger hitbox
+        iframeContainer.style.width = '330px';  // Increased width for larger hitbox
         iframeContainer.style.height = '550px'; // Increased height for larger hitbox
         iframeContainer.style.cursor = 'move';  // Change cursor to move to indicate drag
         iframeContainer.appendChild(iframe);
