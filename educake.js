@@ -133,6 +133,7 @@
         hideAnswersLink.style.display = 'none';  // Hidden initially
         hideAnswersLink.addEventListener('click', () => {
             iframe.style.display = 'none';
+            iframeContainer.style.display = 'none';  // Hide the container along with iframe
             showAnswersButton.style.display = 'flex';  // Show the button again
             hideAnswersLink.style.display = 'none';  // Hide the link again
         });
@@ -185,7 +186,23 @@
 
         iframe.style.resize = 'both';
         iframe.style.overflow = 'auto';
-        
+
+        // Media Query for mobile devices
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @media (max-width: 768px) {
+                iframeContainer {
+                    width: 165px;  // Half of the original width
+                    height: 275px; // Half of the original height
+                }
+                iframe {
+                    width: 165px;  // Adjust iframe size
+                    height: 275px; // Adjust iframe size
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
     } catch (error) {
         console.error("Error:", error);
     }
