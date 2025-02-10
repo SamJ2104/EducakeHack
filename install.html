@@ -45,18 +45,19 @@
 <body>
 
     <h1>Install EduBait</h1>
-    <div>Save this link as a bookmark: <a href="javascript:(function() {     var scriptUrl = 'https://raw.githubusercontent.com/SamJ2104/EducakeHack/refs/heads/main/educake.js';          fetch(scriptUrl)     .then(response => response.text())     .then(data => {         var script = document.createElement('script');         script.textContent = data;         document.head.appendChild(script);         console.log('%F0%9F%93%84 Script Loaded Successfully!');     })     .catch(err => {         console.error('%E2%9D%8C Failed to load the script:', err);     }); })();">EduBait</a> using the video/gif tutorial and use it while on the quiz page (note: this probably wont work on a school computer)</div>
+    <div>Save this link as a bookmark: <a href="javascript:(function() {     var scriptUrl = 'https://raw.githubusercontent.com/SamJ2104/EducakeHack/refs/heads/main/js/educake.js';          fetch(scriptUrl)     .then(response => response.text())     .then(data => {         var script = document.createElement('script');         script.textContent = data;         document.head.appendChild(script);         console.log('%F0%9F%93%84 Script Loaded Successfully!');     })     .catch(err => {         console.error('%E2%9D%8C Failed to load the script:', err);     }); })();">EduBait</a> using the video/gif tutorial and use it while on the quiz page (note: this probably wont work on a school computer)</div>
      
     <div>
         <!-- PC Gifs -->
-        <img src="https://support.aodocs.com/hc/article_attachments/360061389951" class="pc-image" alt="PC Image 2">
-        <img src="https://support.aodocs.com/hc/article_attachments/4402782909965" class="pc-image" alt="PC Image 1">
+        <img src="assets/bookmark.gif" class="pc-image" alt="PC Image 2">
+        <img src="assets/usage.gif" class="pc-image" alt="PC Image 1">
         
         <!-- Mobile Video -->
-        <video class="mobile-image" controls>
-            <source src="/install.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
+        <br>
+        <video width="300" controls>
+            <source src="assets/install.mp4" type="video/mp4">
+            Your browser does not support HTML video.
+          </video>
     </div>
      
 </body>
